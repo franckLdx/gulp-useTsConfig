@@ -1,0 +1,32 @@
+{
+  "name": "gulp-use-ts-config",
+  "version": "1.0.0",
+  "description": "Performs typescript clean and build using tsConfig.json only.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/franckLdx/gulp-useTsConfig.git"
+  },
+  "keywords": [
+    "typescript",
+    "gulp",
+    "tsconfig"
+  ],
+  "author": "F Ledoux",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/franckLdx/gulp-useTsConfig/issues"
+  },
+  "homepage": "https://github.com/franckLdx/gulp-useTsConfig#readme",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "dependencies": {
+    "del": "^2.2.2",
+    "gulp-sourcemaps": "^1.9.1",
+    "gulp-typescript": "^3.1.3"
+  }
+}
