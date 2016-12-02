@@ -1,5 +1,6 @@
 const del = require('del');
 const gulp = require('gulp');
+const filter = require('gulp-filter');
 const gutil = require('gulp-util');
 const sourcemaps = require('gulp-sourcemaps');
 const typeScript = require('gulp-typeScript');
@@ -15,7 +16,12 @@ class TsConfig {
 
   get tsFiles() {
     const includes = this._tsConfig.include || ['/**/*.ts'];
-    return includes.map(include => path.join(this.tsDir, include));
+    return includes.map(include => path.resolve(this.tsDir, include));
+  }
+
+  get excludedTsFiles() {
+    const excludes = this._tsConfig.exclude || [];
+    return excludes.map(exclude => path.resolve(this.tsDir, exclude));
   }
 
   get jsDir() { return `${this._tsConfig.compilerOptions.outDir}`; }
@@ -37,6 +43,10 @@ class TsConfig {
   buildTask() {
     const isSourcemap = this.isSourceMap;
     let pipe = gulp.src(this.tsFiles);
+    const excludedTsFiles = this.excludedTsFiles;
+    if (excludedTsFiles.length > 0) {
+      pipe = pipe.pipe(filter(excludedTsFiles));
+    }
     if (isSourcemap) {
       pipe = pipe.pipe(sourcemaps.init());
     }
