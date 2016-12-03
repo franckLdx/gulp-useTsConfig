@@ -4,23 +4,23 @@ const istanbul = require('gulp-istanbul');
 const mocha = require('gulp-mocha');
 const eslint = require('gulp-eslint');
 
-const src = ['./index.js'];
-const test = ['./test/setUpBluebird.js', './test/**/*test.js'];
+const src = ['./index.js', './src/**/*.js'];
+const test = ['./test/**/*Test.js'];
 
 gulp.task('lint', () => {
-  return gulp.src(src)
+  return gulp.src(src.concat(test))
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
 });
 
-gulp.task('pre-test', function () {
+gulp.task('pre-test', () => {
   return gulp.src(src)
     .pipe(istanbul())
     .pipe(istanbul.hookRequire());
 });
 
-gulp.task('test', ['pre-test'], function () {
+gulp.task('test', ['pre-test'], () => {
   return gulp.src(test)
     .pipe(mocha())
     .pipe(istanbul.writeReports({ reporters: ['text', 'text-summary', 'html'] }));

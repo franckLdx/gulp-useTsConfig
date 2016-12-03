@@ -17,14 +17,14 @@ function doSomething(transform) {
 
 module.exports.clean = () => {
   return doSomething((file) => {
-    const tsConfig = new TsConfig(file.path);
+    const tsConfig = new TsConfig(file);
     return tsConfig.cleanTask();
   });
 };
 
 module.exports.build = () => {
   return doSomething((file) => {
-    const tsConfig = new TsConfig(file.path);
+    const tsConfig = new TsConfig(file);
     return tsConfig.buildTask();
   });
 };

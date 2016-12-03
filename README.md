@@ -2,7 +2,7 @@
 
 **WORK IN PPROGRESS**
 
-> Yet another typescript plugin. This one remove the boilerpart of using gulp-typeScript. For example,
+> Yet another typescript plugin. This one remove the boilerplate of using gulp-typeScript. For example,
 you can generate sourceMap without using any extra gulp-sourcemaps plugin. You provide it with a
 valid tsconfig.json and that's it.
 
@@ -70,7 +70,9 @@ Your tsconfig.json is analyse like so:
 * **file** files to include. Default: none
 * **allowJs** If true, also inclue \*\*/\*.js and \*\*/\*.jsx. Default: false
 * **exclude** files to exclude. Default: none
+* **outDir** Output directory. Default: Default: tsconfig.json location
 
+Sorry, but **outFile** is not supported yet.
 
 ## Restrictions:
 Requires Node 6.0.0 or upper.

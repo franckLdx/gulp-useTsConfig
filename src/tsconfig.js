@@ -1,12 +1,17 @@
+/* eslint import/no-extraneous-dependencies: 0 */
 const del = require('del');
 const gulp = require('gulp');
 const filter = require('gulp-filter');
-const sourcemaps = require('gulp-sourcemaps');
 const typeScript = require('gulp-typeScript');
+const sourcemaps = require('gulp-sourcemaps');
 const path = require('path');
 
 function toFullPath(dir, files) {
   return files.map(file => path.resolve(dir, file));
+}
+
+function normalizeDir(actualDir, defaultDir) {
+  return path.normalize(actualDir || defaultDir);
 }
 
 // Files included by typeScript compiler when "files" and "include" are both left unspecified
@@ -15,11 +20,14 @@ const DEFAULT_INPUT_TS_FILES = ['**/*.ts', '**/*.d.ts', '**/*.tsx'];
 const DEFAULT_INPUT_JS_FILES = ['**/*.js', '**/*.jsx'];
 
 module.exports.TsConfig = class {
-  constructor(tsConfigLocation) {
-    this._tsConfig = require(tsConfigLocation);
+  constructor(vinylFile) {
+    this._tsConfigFile = vinylFile;
+    this._config = JSON.parse(this._tsConfigFile.contents);
   }
 
-  get tsDir() { return this._tsConfig.rootDir; }
+  get tsDir() {
+    return normalizeDir(this._config.rootDir, this._tsConfigFile.base);
+  }
 
   get tsFiles() {
     let tsConfigFiles = this.include.concat(this.files);
@@ -33,35 +41,37 @@ module.exports.TsConfig = class {
   }
 
   get include() {
-    const includes = this._tsConfig.include || [];
+    const includes = this._config.include || [];
     return toFullPath(this.tsDir, includes);
   }
 
   get files() {
-    const files = this._tsConfig.file || [];
+    const files = this._config.file || [];
     return toFullPath(this.tsDir, files);
   }
 
   get excludedTsFiles() {
-    const excludes = this._tsConfig.exclude || [];
+    const excludes = this._config.exclude || [];
     return excludes.map(exclude => path.resolve(this.tsDir, exclude));
   }
 
   get allowJs() {
-    return this._tsConfig.allowJs || false;
+    return this._config.allowJs || false;
   }
 
-  get jsDir() { return `${this._tsConfig.compilerOptions.outDir}`; }
+  get outDir() {
+    return normalizeDir(this._config.compilerOptions.outDir, this._tsConfigFile.location);
+  }
 
-  get jsFiles() { return `${this.jsDir}/**/*.js`; }
+  get jsFiles() { return `${this.outDir}/**/*.js`; }
 
-  get mapFiles() { return `${this.jsDir}/**/*.map`; }
+  get mapFiles() { return `${this.outDir}/**/*.map`; }
 
-  get ambiantFiles() { return `${this.jsDir}/**/*.d.ts`; }
+  get ambiantFiles() { return `${this.outDir}/**/*.d.ts`; }
 
-  get compilerOptions() { return this._tsConfig.compilerOptions; }
+  get compilerOptions() { return this._config.compilerOptions; }
 
-  get isSourceMap() { return this._tsConfig.compilerOptions.sourceMap || false; }
+  get isSourceMap() { return this._config.compilerOptions.sourceMap || false; }
 
   cleanTask() {
     return del([this.jsFiles, this.mapFiles, this.ambiantFiles]);
@@ -81,6 +91,6 @@ module.exports.TsConfig = class {
     if (isSourcemap) {
       pipe = pipe.pipe(sourcemaps.write('.'));
     }
-    return pipe.pipe(gulp.dest(this.jsDir));
+    return pipe.pipe(gulp.dest(this.outDir));
   }
 };

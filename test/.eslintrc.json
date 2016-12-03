@@ -13,6 +13,7 @@
     "no-bitwise": ["error", { "allow": ["|"] }],
     "no-underscore-dangle": "off",
     "strict": "off",
-    "import/no-unresolved": [2, { "ignore": ["gulp-typescript"] }]
+    "func-names": "off",
+    "prefer-arrow-callback": "off"
   }
 }
