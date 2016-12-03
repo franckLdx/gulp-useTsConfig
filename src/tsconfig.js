@@ -19,6 +19,13 @@ const DEFAULT_INPUT_TS_FILES = ['**/*.ts', '**/*.d.ts', '**/*.tsx'];
 // JS files included by typeScript compiler when allowJs is set to true.
 const DEFAULT_INPUT_JS_FILES = ['**/*.js', '**/*.jsx'];
 
+/** Manages the tsconfig file. Most of the options of this class match tsconfig file
+options. YOu need to read https://www.typescriptlang.org/docs/handbook/compiler-options.html
+and https://www.typescriptlang.org/docs/handbook/tsconfig-json.html to understand this class.
+properties that returns files list use tsconfig options to find what are the matching files:
+ex: mapFiles return <path>/**//*.map where <path> is build based on tsconfig content. if
+sourceMap is not set in the config file then mapFiles returns undefined.
+*/
 module.exports.TsConfig = class {
   constructor(vinylFile) {
     this._tsConfigFile = vinylFile;
@@ -29,6 +36,7 @@ module.exports.TsConfig = class {
     return normalizeDir(this._config.rootDir, this._tsConfigFile.base);
   }
 
+  /** List of files to process. exclude has to be applied. */
   get tsFiles() {
     let tsConfigFiles = this.include.concat(this.files);
     if (tsConfigFiles.length === 0) {
@@ -46,11 +54,11 @@ module.exports.TsConfig = class {
   }
 
   get files() {
-    const files = this._config.file || [];
+    const files = this._config.files || [];
     return toFullPath(this.tsDir, files);
   }
 
-  get excludedTsFiles() {
+  get exclude() {
     const excludes = this._config.exclude || [];
     return excludes.map(exclude => path.resolve(this.tsDir, exclude));
   }
@@ -59,28 +67,57 @@ module.exports.TsConfig = class {
     return this._config.allowJs || false;
   }
 
+  /** the destination dir. compilerOptions.outDir is not set, returns tsconfig file location */
   get outDir() {
-    return normalizeDir(this._config.compilerOptions.outDir, this._tsConfigFile.location);
+    return normalizeDir(this.compilerOptions.outDir, this._tsConfigFile.base);
   }
 
-  get jsFiles() { return `${this.outDir}/**/*.js`; }
+  /** Return the destination javascript files */
+  get jsFiles() {
+    return path.join(this.outDir, '/**/*.js');
+  }
 
-  get mapFiles() { return `${this.outDir}/**/*.map`; }
+  get sourceMap() {
+    return this.compilerOptions.sourceMap || false;
+  }
 
-  get ambiantFiles() { return `${this.outDir}/**/*.d.ts`; }
+  /** Returns the sourcemap files, undefined if sourceMap is not set */
+  get mapFiles() {
+    return this.sourceMap ? path.join(this.outDir, '/**/*.map') : undefined;
+  }
 
-  get compilerOptions() { return this._config.compilerOptions; }
+  get declaration() {
+    return this.compilerOptions.declaration || false;
+  }
 
-  get isSourceMap() { return this._config.compilerOptions.sourceMap || false; }
+  get declarationDir() {
+    return normalizeDir(this.compilerOptions.declarationDir, this._tsConfigFile.base);
+  }
+
+  /** Returns the declaration files, undefined if declaration is not set */
+  get declarationFiles() {
+    return this.declaration ? path.join(this.declarationDir, '/**/*.d.ts') : undefined;
+  }
+
+  get compilerOptions() {
+    return this._config.compilerOptions || {};
+  }
 
   cleanTask() {
-    return del([this.jsFiles, this.mapFiles, this.ambiantFiles]);
+    const files = [];
+    ([this.jsFiles, this.mapFiles, this.declarationFiles], files).reduce((result, item) => {
+      if (item) {
+        result.push(item);
+      }
+      return result;
+    });
+    return del(files);
   }
 
   buildTask() {
-    const isSourcemap = this.isSourceMap;
+    const isSourcemap = this.sourceMap;
     let pipe = gulp.src(this.tsFiles);
-    const excludedTsFiles = this.excludedTsFiles;
+    const excludedTsFiles = this.exclude;
     if (excludedTsFiles.length > 0) {
       pipe = pipe.pipe(filter(excludedTsFiles));
     }

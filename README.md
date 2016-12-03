@@ -66,11 +66,13 @@ gulp.task('pre-build', () => {
 ### Tsconfig.json
 Your tsconfig.json is analyse like so:
 * **rootDir** the root location of typescript files. Default: tsconfig.json location
-* **include** list of glob files to include. Default: \*\*/\*.ts
-* **file** files to include. Default: none
+* **include** list of glob files to include. Default: none
+* **files** files to include. Default: none
 * **allowJs** If true, also inclue \*\*/\*.js and \*\*/\*.jsx. Default: false
 * **exclude** files to exclude. Default: none
 * **outDir** Output directory. Default: Default: tsconfig.json location
+
+If the "files" and "include" are both left unspecified, the compiled files are \*\*/\*.ts, \*\*/\*.d.ts and \*\*/\*.tsx.
 
 Sorry, but **outFile** is not supported yet.
 
