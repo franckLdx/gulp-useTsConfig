@@ -131,7 +131,9 @@ describe('analyseTsConfig ', function () {
       });
       const tsConfig = new TsConfig(vinyl);
       const expectedOutDir = path.normalize(expected);
+      const expectedJsFiles = path.join(expectedOutDir, '**', '*.js');
       tsConfig.outDir.should.be.deep.equal(expectedOutDir);
+      tsConfig.jsFiles.should.be.deep.equal(expectedJsFiles);
     }
     it('outDir is not defined, it should be the file location', function () {
       const dirRef = process.cwd();
@@ -173,33 +175,61 @@ describe('analyseTsConfig ', function () {
     });
   });
 
-  describe.skip('declaration should be well managed', function () {
-    function testDeclaration(dirRef, declaration, declarationDir, expectedDeclaration, expectedDeclarationFiles) {
+  describe('Declaration should be well managed', function () {
+    function testDeclaration(
+      { dirRef, declaration, declarationDir, outDir },
+      { expectedDeclaration, expectedDeclarationDir }
+    ) {
       const vinyl = getVinylFile(`${dirRef}/tsconfig.json`, {
         compilerOptions: {
+          outDir,
           declaration,
           declarationDir,
         },
       });
+      const expectedDeclarationFiles = expectedDeclarationDir ? path.join(expectedDeclarationDir, '**', '*.d.ts') : undefined;
       const tsConfig = new TsConfig(vinyl);
       tsConfig.declaration.should.be.deep.equal(expectedDeclaration);
       if (expectedDeclaration) {
+        tsConfig.declarationDir.should.be.deep.equal(expectedDeclarationDir);
         tsConfig.declarationFiles.should.be.deep.equal(expectedDeclarationFiles);
       } else {
+        should.not.exist(tsConfig.declarationDir);
         should.not.exist(tsConfig.declarationFiles);
       }
     }
-    it('sourceMap is not defined, should be false and have no file', function () {
+    it('declaration is not defined, this option should be false and have neither dir nor file', function () {
       const dirRef = process.cwd();
-      testSourceMap(dirRef, undefined, false, undefined);
+      testDeclaration({ dirRef }, { expectedDeclaration: false });
     });
-    it('sourceMap is not false, should be false and have no file', function () {
+    it('declaration is false, this option should be false and have neither dir nor file', function () {
       const dirRef = process.cwd();
-      testSourceMap(dirRef, false, false, undefined);
+      testDeclaration({ dirRef, declaration: false }, { expectedDeclaration: false });
+      testDeclaration({ dirRef, declaration: false, declarationDir: '/declarationDir' }, { expectedDeclaration: false });
     });
-    it('sourceMap is not true, should be true and have map files', function () {
+    it('declaration is true but neither declacationDir not outDir are defined, this option should be true, have files in the current directory', function () {
       const dirRef = process.cwd();
-      testSourceMap(dirRef, true, true, path.join(dirRef, '**/*.map'));
+      testDeclaration(
+        { dirRef, declaration: true },
+        { expectedDeclaration: true, expectedDeclarationDir: dirRef });
+    });
+    it('declaration is true, declacationDir is not defined, outDIr is defined, this option should be true and have files in outDir', function () {
+      const outDir = 'foo';
+      testDeclaration(
+        { dirRef: process.cwd(), declaration: true, outDir },
+        { expectedDeclaration: true, expectedDeclarationDir: outDir });
+    });
+    it('declaration is true, declacationDir is defined, outDir is not defined, this option should be true and have files in declarationDir', function () {
+      const declarationDir = 'foo';
+      testDeclaration(
+        { dirRef: process.cwd(), declaration: true, declarationDir },
+        { expectedDeclaration: true, expectedDeclarationDir: declarationDir });
+    });
+    it('declaration is true, declacationDir an doutDir are defined, this option should be true and have files in declarationDir', function () {
+      const declarationDir = 'foo';
+      testDeclaration(
+        { dirRef: process.cwd(), declaration: true, declarationDir },
+        { expectedDeclaration: true, expectedDeclarationDir: declarationDir });
     });
   });
 });

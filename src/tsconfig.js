@@ -74,7 +74,7 @@ module.exports.TsConfig = class {
 
   /** Return the destination javascript files */
   get jsFiles() {
-    return path.join(this.outDir, '/**/*.js');
+    return path.join(this.outDir, '**', '*.js');
   }
 
   get sourceMap() {
@@ -83,7 +83,7 @@ module.exports.TsConfig = class {
 
   /** Returns the sourcemap files, undefined if sourceMap is not set */
   get mapFiles() {
-    return this.sourceMap ? path.join(this.outDir, '/**/*.map') : undefined;
+    return this.sourceMap ? path.join(this.outDir, '**', '*.map') : undefined;
   }
 
   get declaration() {
@@ -91,12 +91,13 @@ module.exports.TsConfig = class {
   }
 
   get declarationDir() {
-    return normalizeDir(this.compilerOptions.declarationDir, this._tsConfigFile.base);
+    return this.declaration ?
+      normalizeDir(this.compilerOptions.declarationDir, this.outDir) : undefined;
   }
 
   /** Returns the declaration files, undefined if declaration is not set */
   get declarationFiles() {
-    return this.declaration ? path.join(this.declarationDir, '/**/*.d.ts') : undefined;
+    return this.declaration ? path.join(this.declarationDir, '**', '*.d.ts') : undefined;
   }
 
   get compilerOptions() {

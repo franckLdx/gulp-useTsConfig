@@ -2,7 +2,7 @@ const gutil = require('gulp-util');
 const through2 = require('through2');
 const { TsConfig } = require('./src/tsconfig');
 
-function doSomething(transform) {
+function getTransformPipe(transform) {
   let gotAfile = false;
   return through2.obj(function toStream(file, encoding, callback) {
     gotAfile = true;
@@ -16,14 +16,14 @@ function doSomething(transform) {
 }
 
 module.exports.clean = () => {
-  return doSomething((file) => {
+  return getTransformPipe((file) => {
     const tsConfig = new TsConfig(file);
     return tsConfig.cleanTask();
   });
 };
 
 module.exports.build = () => {
-  return doSomething((file) => {
+  return getTransformPipe((file) => {
     const tsConfig = new TsConfig(file);
     return tsConfig.buildTask();
   });
