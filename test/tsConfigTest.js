@@ -20,10 +20,17 @@ function getVinylFile(filePath, content) {
 
 describe('analyseTsConfig ', function () {
   describe('tsDir should be well defined', function () {
-    function testTsDir(dirRef, expected) {
+    function testTsDir(dirRef, expecteDir) {
+      const actualExpecteDir = path.resolve(expecteDir);
+      const expectedFiles = [
+        path.join(actualExpecteDir, '**', '*.ts'),
+        path.join(actualExpecteDir, '**', '*.d.ts'),
+        path.join(actualExpecteDir, '**', '*.tsx'),
+      ];
       const vinyl = getVinylFile(`${dirRef}/tsconfig.json`, {});
       const tsConfig = new TsConfig(vinyl);
-      tsConfig.tsDir.should.be.deep.equal(path.normalize(expected));
+      tsConfig.tsDir.should.be.deep.equal(actualExpecteDir);
+      tsConfig.tsFiles.should.be.deep.equal(expectedFiles);
     }
     it('rootDir is not defined, tsDir should be the file path', function () {
       const dirRef = '/test';
@@ -130,7 +137,7 @@ describe('analyseTsConfig ', function () {
         },
       });
       const tsConfig = new TsConfig(vinyl);
-      const expectedOutDir = path.normalize(expected);
+      const expectedOutDir = path.resolve(expected);
       const expectedJsFiles = path.join(expectedOutDir, '**', '*.js');
       tsConfig.outDir.should.be.deep.equal(expectedOutDir);
       tsConfig.jsFiles.should.be.deep.equal(expectedJsFiles);
@@ -187,11 +194,14 @@ describe('analyseTsConfig ', function () {
           declarationDir,
         },
       });
-      const expectedDeclarationFiles = expectedDeclarationDir ? path.join(expectedDeclarationDir, '**', '*.d.ts') : undefined;
+      const actualExpectedDeclarationDir = expectedDeclarationDir ?
+        path.resolve(expectedDeclarationDir) : undefined;
+      const expectedDeclarationFiles = actualExpectedDeclarationDir ?
+        path.join(actualExpectedDeclarationDir, '**', '*.d.ts') : undefined;
       const tsConfig = new TsConfig(vinyl);
       tsConfig.declaration.should.be.deep.equal(expectedDeclaration);
       if (expectedDeclaration) {
-        tsConfig.declarationDir.should.be.deep.equal(expectedDeclarationDir);
+        tsConfig.declarationDir.should.be.deep.equal(actualExpectedDeclarationDir);
         tsConfig.declarationFiles.should.be.deep.equal(expectedDeclarationFiles);
       } else {
         should.not.exist(tsConfig.declarationDir);

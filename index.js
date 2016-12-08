@@ -1,6 +1,7 @@
 const gutil = require('gulp-util');
 const through2 = require('through2');
 const { TsConfig } = require('./src/tsconfig');
+const { tasks } = require('./src/tasks');
 
 function getTransformPipe(transform) {
   let gotAfile = false;
@@ -18,13 +19,13 @@ function getTransformPipe(transform) {
 module.exports.clean = () => {
   return getTransformPipe((file) => {
     const tsConfig = new TsConfig(file);
-    return tsConfig.cleanTask();
+    return tasks.clean(tsConfig);
   });
 };
 
 module.exports.build = () => {
   return getTransformPipe((file) => {
     const tsConfig = new TsConfig(file);
-    return tsConfig.buildTask();
+    return tasks.build(tsConfig);
   });
 };

@@ -1,9 +1,5 @@
-/* eslint import/no-extraneous-dependencies: 0 */
-const del = require('del');
-const gulp = require('gulp');
-const filter = require('gulp-filter');
-const typeScript = require('gulp-typeScript');
-const sourcemaps = require('gulp-sourcemaps');
+'use strict';
+
 const path = require('path');
 
 function toFullPath(dir, files) {
@@ -11,7 +7,7 @@ function toFullPath(dir, files) {
 }
 
 function normalizeDir(actualDir, defaultDir) {
-  return path.normalize(actualDir || defaultDir);
+  return path.resolve(path.normalize(actualDir || defaultDir));
 }
 
 // Files included by typeScript compiler when "files" and "include" are both left unspecified
@@ -102,33 +98,5 @@ module.exports.TsConfig = class {
 
   get compilerOptions() {
     return this._config.compilerOptions || {};
-  }
-
-  cleanTask() {
-    const files = [];
-    ([this.jsFiles, this.mapFiles, this.declarationFiles], files).reduce((result, item) => {
-      if (item) {
-        result.push(item);
-      }
-      return result;
-    });
-    return del(files);
-  }
-
-  buildTask() {
-    const isSourcemap = this.sourceMap;
-    let pipe = gulp.src(this.tsFiles);
-    const excludedTsFiles = this.exclude;
-    if (excludedTsFiles.length > 0) {
-      pipe = pipe.pipe(filter(excludedTsFiles));
-    }
-    if (isSourcemap) {
-      pipe = pipe.pipe(sourcemaps.init());
-    }
-    pipe = pipe.pipe(typeScript(this.compilerOptions));
-    if (isSourcemap) {
-      pipe = pipe.pipe(sourcemaps.write('.'));
-    }
-    return pipe.pipe(gulp.dest(this.outDir));
   }
 };
