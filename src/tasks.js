@@ -36,6 +36,7 @@ function getSourceMapWrite(tsConfig) {
   let write;
   const options = {
     sourceRoot: tsConfig.mapRoot,
+    includeContent: tsConfig.inlineSources,
   };
   if (tsConfig.sourceMap) {
     write = sourcemaps.write('.', options);
