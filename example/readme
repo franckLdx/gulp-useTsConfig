@@ -1,0 +1,1 @@
+GO in a sub directory and type "..\..\node_modules\.bin\gulp --gulpfile ..\gulpfile.js --cwd ." 

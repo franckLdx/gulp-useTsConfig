@@ -12,13 +12,11 @@
     "inlineSources": false,
     "target": "es6"
   },
-  "rootDir": "..",
+  "rootDir": ".",
   "include": [
     "**/*.ts"
   ],
-  "exclude": [
-    "**/index.ts"
-  ],
+  "exclude": ["./testSource/**"],
   "compileOnSave": false,
   "formatCodeOptions": {
     "indentSize": 2,

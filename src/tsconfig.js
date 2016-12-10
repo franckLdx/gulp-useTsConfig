@@ -77,6 +77,14 @@ module.exports.TsConfig = class {
     return this.compilerOptions.sourceMap || false;
   }
 
+  get inlineSourceMap() {
+    return this.compilerOptions.inlineSourceMap || false;
+  }
+
+  get mapRoot() {
+    return this.compilerOptions.mapRoot;
+  }
+
   /** Returns the sourcemap files, undefined if sourceMap is not set */
   get mapFiles() {
     return this.sourceMap ? path.join(this.outDir, '**', '*.map') : undefined;

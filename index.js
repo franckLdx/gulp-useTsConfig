@@ -1,7 +1,7 @@
 const gutil = require('gulp-util');
 const through2 = require('through2');
 const { TsConfig } = require('./src/tsconfig');
-const { tasks } = require('./src/tasks');
+const tasks = require('./src/tasks');
 
 function getTransformPipe(transform) {
   let gotAfile = false;

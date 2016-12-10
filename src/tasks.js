@@ -10,29 +10,52 @@ const sourcemaps = require('gulp-sourcemaps');
 
 module.exports.clean = (tsConfig) => {
   const rawFiles = [tsConfig.jsFiles, tsConfig.mapFiles, tsConfig.declarationFiles];
-  const actualfiles = [];
-  (rawFiles, actualfiles).reduce((result, item) => {
-    if (item) {
-      result.push(item);
-    }
-    return result;
-  });
+  const actualfiles = rawFiles.reduce(
+    (result, item) => {
+      if (item) {
+        result.push(item);
+      }
+      return result;
+    },
+    []
+  );
   return del(actualfiles);
 };
 
-module.exports.build = (tsConfig) => {
-  const isSourcemap = tsConfig.sourceMap;
-  let pipe = gulp.src(tsConfig.tsFiles);
-  const excludedTsFiles = tsConfig.exclude;
-  if (excludedTsFiles.length > 0) {
-    pipe = pipe.pipe(filter(excludedTsFiles));
+function getFilter(tsConfig) {
+  const excludeMask = tsConfig.exclude.map(item => `!${item}`);
+  const mask = ['*'].concat(excludeMask);
+  return filter(mask);
+}
+
+function getSourceMapInit(tsConfig) {
+  return (tsConfig.sourceMap || tsConfig.inlineSourceMap) ? sourcemaps.init() : undefined;
+}
+
+function getSourceMapWrite(tsConfig) {
+  let write;
+  const options = {
+    sourceRoot: tsConfig.mapRoot,
+  };
+  if (tsConfig.sourceMap) {
+    write = sourcemaps.write('.', options);
+  } else if (tsConfig.inlineSourceMap) {
+    write = sourcemaps.write(options);
   }
-  if (isSourcemap) {
-    pipe = pipe.pipe(sourcemaps.init());
+  return write;
+}
+
+module.exports.build = (tsConfig) => {
+  let pipe = gulp.src(tsConfig.tsFiles);
+  pipe = pipe.pipe(getFilter(tsConfig));
+  const sourceMapInit = getSourceMapInit(tsConfig);
+  if (sourceMapInit) {
+    pipe = pipe.pipe(sourceMapInit);
   }
   pipe = pipe.pipe(typeScript(tsConfig.compilerOptions));
-  if (isSourcemap) {
-    pipe = pipe.pipe(sourcemaps.write('.'));
+  const sourceMapWrite = getSourceMapWrite(tsConfig);
+  if (sourceMapWrite) {
+    pipe = pipe.pipe(sourceMapWrite);
   }
   return pipe.pipe(gulp.dest(tsConfig.outDir));
 };
