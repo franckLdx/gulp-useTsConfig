@@ -16,7 +16,7 @@
   "include": [
     "**/*.ts"
   ],
-  "exclude": ["./testSource/**"],
+  "exclude": ["./src/**"],
   "compileOnSave": false,
   "formatCodeOptions": {
     "indentSize": 2,

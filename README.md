@@ -1,7 +1,5 @@
 # gulp-useTsConfig
 
-**WORK IN PPROGRESS**
-
 > Yet another typescript plugin. This one remove the boilerplate of using gulp-typeScript. For example,
 you can generate sourceMap without using any extra gulp-sourcemaps plugin. You provide it with a
 valid tsconfig.json and that's it.
