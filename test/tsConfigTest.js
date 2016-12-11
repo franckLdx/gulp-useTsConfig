@@ -61,6 +61,81 @@ describe('analyseTsConfig ', function () {
     });
   });
 
+  describe('tsFiles should be well defined', function () {
+    function testTsFiles(files, include, allowJs, expected) {
+      const dirRef = process.cwd();
+      const vinyl = getVinylFile(`${dirRef}/tsconfig.json`, {
+        files,
+        include,
+        allowJs,
+      });
+      const tsConfig = new TsConfig(vinyl);
+      const expectedResult = expected ? expected.map(item => path.join(dirRef, item)) : [];
+      tsConfig.tsFiles.should.be.deep.equal(expectedResult);
+    }
+    const data = [
+      {
+        title: 'neither files nor include are set, allowJs is false, tsFile should be default',
+        files: undefined,
+        include: undefined,
+        allowJs: false,
+        expected: ['**/*.ts', '**/*.d.ts', '**/*.tsx'],
+      },
+      {
+        title: 'neither files nor include are set, allowJs is true, tsFile should be default + *.js and *.jsx',
+        files: undefined,
+        include: undefined,
+        allowJs: true,
+        expected: ['**/*.ts', '**/*.d.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+      },
+      {
+        title: 'files is set but not include, allowJs is false, tsFile should files',
+        files: ['*.foo', '*.bar'],
+        include: undefined,
+        allowJs: false,
+        expected: ['*.foo', '*.bar'],
+      },
+      {
+        title: 'files is set but not include, allowJs is true, tsFile should files + *.js and *.jsx',
+        files: ['*.foo', '*.bar'],
+        include: undefined,
+        allowJs: true,
+        expected: ['*.foo', '*.bar', '**/*.js', '**/*.jsx'],
+      },
+      {
+        title: 'files is not set, include is set, allowJs is false, tsFile should include',
+        files: undefined,
+        include: ['*.foo', '*.bar'],
+        allowJs: false,
+        expected: ['*.foo', '*.bar'],
+      },
+      {
+        title: 'files is not set, include is set, allowJs is true, tsFile should include + *.js and *.jsx',
+        files: undefined,
+        include: ['*.foo', '*.bar'],
+        allowJs: true,
+        expected: ['*.foo', '*.bar', '**/*.js', '**/*.jsx'],
+      },
+      {
+        title: 'files is set, include is set, allowJs is false, tsFile should file + include',
+        files: ['*.ace', '*.me'],
+        include: ['*.foo', '*.bar'],
+        allowJs: false,
+        expected: ['*.foo', '*.bar', '*.ace', '*.me'],
+      },
+      {
+        title: 'files is set, include is set, allowJs is false, tsFile should file + include + *.js and *.jsx',
+        files: ['*.ace', '*.me'],
+        include: ['*.foo', '*.bar'],
+        allowJs: true,
+        expected: ['*.foo', '*.bar', '*.ace', '*.me', '**/*.js', '**/*.jsx'],
+      },
+    ];
+    data.forEach(({ title, files, include, allowJs, expected }) => {
+      it(title, () => testTsFiles(files, include, allowJs, expected));
+    });
+  });
+
   describe('include should be well defined', function () {
     function testInclude(include) {
       const dirRef = process.cwd();
@@ -370,6 +445,52 @@ describe('analyseTsConfig ', function () {
     data.forEach(({ title, inlineSourceMap, expectedInlineSourceMap }) => {
       it(title, () => {
         testInlineSourceMap(inlineSourceMap, expectedInlineSourceMap);
+      });
+    });
+  });
+
+  describe('inlineSources should be well managed', function () {
+    function testInlineSources(inlineSources, expected) {
+      const dirRef = process.cwd();
+      const vinyl = getVinylFile(`${dirRef}/tsconfig.json`, {
+        compilerOptions: {
+          inlineSources,
+        },
+      });
+      const tsConfig = new TsConfig(vinyl);
+      tsConfig.inlineSources.should.be.deep.equal(expected);
+    }
+    const data = [
+      { title: 'inlineSources is not set, should be false', inlineSources: undefined, expected: false },
+      { title: 'inlineSourceMap set to false, should be false', inlineSources: false, expected: false },
+      { title: 'inlineSourceMap set to true, should be true', inlineSources: true, expected: true },
+    ];
+    data.forEach(({ title, inlineSources, expected }) => {
+      it(title, () => {
+        testInlineSources(inlineSources, expected);
+      });
+    });
+  });
+
+  describe('mapRoot should be well managed', function () {
+    function testMapRoot(mapRoot, expected) {
+      const dirRef = process.cwd();
+      const vinyl = getVinylFile(`${dirRef}/tsconfig.json`, {
+        compilerOptions: {
+          mapRoot,
+        },
+      });
+      const tsConfig = new TsConfig(vinyl);
+      tsConfig.mapRoot.should.be.deep.equal(expected);
+    }
+    const data = [
+      { title: 'mapRoot is not set, should be false', mapRoot: undefined, expected: false },
+      { title: 'mapRoot set to false, should be false', mapRoot: false, expected: false },
+      { title: 'mapRoot set to true, should be true', mapRoot: true, expected: true },
+    ];
+    data.forEach(({ title, mapRoot, expected }) => {
+      it(title, () => {
+        testMapRoot(mapRoot, expected);
       });
     });
   });

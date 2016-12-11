@@ -21,7 +21,7 @@ const DEFAULT_INPUT_JS_FILES = ['**/*.js', '**/*.jsx'];
 options. YOu need to read https://www.typescriptlang.org/docs/handbook/compiler-options.html
 and https://www.typescriptlang.org/docs/handbook/tsconfig-json.html to understand this class.
 properties that returns files list use tsconfig options to find what are the matching files:
-ex: mapFiles return <path>/**//*.map where <path> is build based on tsconfig content. if
+ex: mapFiles return <path>\/**\/\/*.map where <path> is build based on tsconfig content. if
 sourceMap is not set in the config file then mapFiles returns undefined.
 */
 module.exports.TsConfig = class {
@@ -97,7 +97,7 @@ module.exports.TsConfig = class {
 
   /** mapRoot options. Default: false */
   get mapRoot() {
-    return this.compilerOptions.mapRoot;
+    return this.compilerOptions.mapRoot || false;
   }
 
   /** Returns the sourcemap files, undefined if sourceMap is not set */
