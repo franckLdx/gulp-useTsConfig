@@ -2,10 +2,12 @@
 
 const path = require('path');
 
+/** Add full path to each files */
 function toFullPath(dir, files) {
   return files.map(file => path.resolve(dir, file));
 }
 
+/** Nomaliz a path */
 function normalizeDir(actualDir, defaultDir) {
   return path.resolve(path.normalize(actualDir || defaultDir));
 }
@@ -28,6 +30,7 @@ module.exports.TsConfig = class {
     this._config = JSON.parse(this._tsConfigFile.contents);
   }
 
+  /** Returns tsDir: it's rootDir if defined. default: tsconfig file location */
   get tsDir() {
     return normalizeDir(this._config.rootDir, this._tsConfigFile.base);
   }
@@ -44,21 +47,25 @@ module.exports.TsConfig = class {
     return tsConfigFiles;
   }
 
+  /** The inclue option. Default: [] */
   get include() {
     const includes = this._config.include || [];
     return toFullPath(this.tsDir, includes);
   }
 
+  /** The files option. Default: [] */
   get files() {
     const files = this._config.files || [];
     return toFullPath(this.tsDir, files);
   }
 
+  /** Exclude option? Defualt: [] */
   get exclude() {
     const excludes = this._config.exclude || [];
     return excludes.map(exclude => path.resolve(this.tsDir, exclude));
   }
 
+  /** AllowJs option. Default: false*/
   get allowJs() {
     return this._config.allowJs || false;
   }
@@ -73,18 +80,22 @@ module.exports.TsConfig = class {
     return path.join(this.outDir, '**', '*.js');
   }
 
+  /** sourceMap option. Default: false */
   get sourceMap() {
     return this.compilerOptions.sourceMap || false;
   }
 
+  /** inineSourceMap option. Default: false*/
   get inlineSourceMap() {
     return this.compilerOptions.inlineSourceMap || false;
   }
 
+  /** inlinceSources options. Default: false */
   get inlineSources() {
     return this.compilerOptions.inlineSources || false;
   }
 
+  /** mapRoot options. Default: false */
   get mapRoot() {
     return this.compilerOptions.mapRoot;
   }
@@ -94,10 +105,12 @@ module.exports.TsConfig = class {
     return this.sourceMap ? path.join(this.outDir, '**', '*.js.map') : undefined;
   }
 
+  /** declration options. Default: false */
   get declaration() {
     return this.compilerOptions.declaration || false;
   }
 
+  /** declration dir. Default: undefined */
   get declarationDir() {
     return this.declaration ?
       normalizeDir(this.compilerOptions.declarationDir, this.outDir) : undefined;
@@ -108,6 +121,7 @@ module.exports.TsConfig = class {
     return this.declaration ? path.join(this.declarationDir, '**', '*.d.ts') : undefined;
   }
 
+  /** compilerOptions section. Default: {} */
   get compilerOptions() {
     return this._config.compilerOptions || {};
   }

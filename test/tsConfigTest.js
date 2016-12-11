@@ -20,29 +20,44 @@ function getVinylFile(filePath, content) {
 
 describe('analyseTsConfig ', function () {
   describe('tsDir should be well defined', function () {
-    function testTsDir(dirRef, expecteDir) {
+    function testTsDir(dirRef, rootDir, expecteDir) {
       const actualExpecteDir = path.resolve(expecteDir);
       const expectedFiles = [
         path.join(actualExpecteDir, '**', '*.ts'),
         path.join(actualExpecteDir, '**', '*.d.ts'),
         path.join(actualExpecteDir, '**', '*.tsx'),
       ];
-      const vinyl = getVinylFile(`${dirRef}/tsconfig.json`, {});
+      const vinyl = getVinylFile(`${dirRef}/tsconfig.json`, {
+        rootDir,
+      });
       const tsConfig = new TsConfig(vinyl);
       tsConfig.tsDir.should.be.deep.equal(actualExpecteDir);
       tsConfig.tsFiles.should.be.deep.equal(expectedFiles);
     }
-    it('rootDir is not defined, tsDir should be the file path', function () {
-      const dirRef = '/test';
-      testTsDir(dirRef, dirRef);
-    });
-    it('rootDir is a full path, tsDir should be this path', function () {
-      const dirRef = process.cwd();
-      testTsDir(dirRef, dirRef);
-    });
-    it('rootDir is a relative path, tsDir should be a full path', function () {
-      const dirRef = './ts';
-      testTsDir(dirRef, dirRef);
+    const data = [
+      {
+        title: 'rootDir is not defined, tsDir should be the file path',
+        dirRef: '/test',
+        rootDir: undefined,
+        expectedDir: '/test',
+      },
+      {
+        title: 'rootDir is a full path, tsDir should be this path',
+        dirRef: '/test',
+        rootDir: process.cwd(),
+        expectedDir: process.cwd(),
+      },
+      {
+        title: 'rootDir is a relative path, tsDir should be a full path',
+        dirRef: process.cwd(),
+        rootDir: './ts',
+        expectedDir: './ts',
+      },
+    ];
+    data.forEach(({ title, dirRef, rootDir, expectedDir }) => {
+      it(title, () => {
+        testTsDir(dirRef, rootDir, expectedDir);
+      });
     });
   });
 
@@ -56,14 +71,22 @@ describe('analyseTsConfig ', function () {
       const expectedResult = include ? include.map(item => path.join(process.cwd(), item)) : [];
       tsConfig.include.should.be.deep.equal(expectedResult);
     }
-    it('include is not defined, it should be []', function () {
-      testInclude(undefined);
-    });
-    it('include is defined with a single value which should be returned with the relevant dir', function () {
-      testInclude(['**/*.ts']);
-    });
-    it('include is defined with a multiple values which should be returned with the relevant dir', function () {
-      testInclude(['**/*.ts', '**/*.tsx']);
+    const data = [
+      {
+        title: 'include is not defined, it should be []',
+        include: undefined,
+      },
+      {
+        title: 'include is defined with a single value which should be returned with the relevant dir',
+        include: ['**/*.ts'],
+      },
+      {
+        title: 'include is defined with a multiple values which should be returned with the relevant dir',
+        include: ['**/*.ts', '**/*.tsx'],
+      },
+    ];
+    data.forEach(({ title, include }) => {
+      it(title, () => { testInclude(include); });
     });
   });
 
@@ -142,14 +165,24 @@ describe('analyseTsConfig ', function () {
       tsConfig.outDir.should.be.deep.equal(expectedOutDir);
       tsConfig.jsFiles.should.be.deep.equal(expectedJsFiles);
     }
-    it('outDir is not defined, it should be the file location', function () {
-      const dirRef = process.cwd();
-      testOutDir(dirRef, undefined, dirRef);
-    });
-    it('outDir is defined, it should be the destination dir', function () {
-      const dirRef = process.cwd();
-      const outDir = '/foo';
-      testOutDir(dirRef, outDir, outDir);
+    const data = [
+      {
+        title: 'outDir is not defined, it should be the file location',
+        dirRef: process.cwd(),
+        outDir: undefined,
+        expected: process.cwd(),
+      },
+      {
+        title: 'outDir is not defined, it should be the file location',
+        dirRef: process.cwd(),
+        outDir: '/foo',
+        expected: '/foo',
+      },
+    ];
+    data.forEach(({ title, dirRef, outDir, expected }) => {
+      it(title, () => {
+        testOutDir(dirRef, outDir, expected);
+      });
     });
   });
 
@@ -178,15 +211,16 @@ describe('analyseTsConfig ', function () {
     });
     it('sourceMap is not true, should be true and have map files', function () {
       const dirRef = process.cwd();
-      testSourceMap(dirRef, true, true, path.join(dirRef, '**/*.map'));
+      testSourceMap(dirRef, true, true, path.join(dirRef, '**/*.js.map'));
     });
   });
 
   describe('Declaration should be well managed', function () {
     function testDeclaration(
-      { dirRef, declaration, declarationDir, outDir },
+      { declaration, declarationDir, outDir },
       { expectedDeclaration, expectedDeclarationDir }
     ) {
+      const dirRef = process.cwd();
       const vinyl = getVinylFile(`${dirRef}/tsconfig.json`, {
         compilerOptions: {
           outDir,
@@ -208,38 +242,88 @@ describe('analyseTsConfig ', function () {
         should.not.exist(tsConfig.declarationFiles);
       }
     }
-    it('declaration is not defined, this option should be false and have neither dir nor file', function () {
+    const data = [
+      {
+        title: 'declaration is not defined, this option should be false and have neither dir nor file',
+        declaration: undefined,
+        declarationDir: undefined,
+        outDir: undefined,
+        expectedDeclaration: false,
+        expectedDeclarationDir: false,
+      },
+      {
+        title: 'declaration is false, this option should be false and have neither dir nor file',
+        declaration: false,
+        declarationDir: undefined,
+        outDir: undefined,
+        expectedDeclaration: false,
+        expectedDeclarationDir: false,
+      },
+      {
+        title: 'declaration is true but neither declacationDir not outDir are defined, this option should be true, have files in the current directory',
+        declaration: true,
+        declarationDir: undefined,
+        outDir: undefined,
+        expectedDeclaration: true,
+        expectedDeclarationDir: process.cwd(),
+      },
+      {
+        title: 'declaration is true, declacationDir is not defined, outDIr is defined, this option should be true and have files in outDir',
+        declaration: true,
+        declarationDir: undefined,
+        outDir: 'foo',
+        expectedDeclaration: true,
+        expectedDeclarationDir: 'foo',
+      },
+      {
+        title: 'declaration is true, declacationDir is defined, outDir is not defined, this option should be true and have files in declarationDir',
+        declaration: true,
+        declarationDir: 'foo',
+        outDir: undefined,
+        expectedDeclaration: true,
+        expectedDeclarationDir: 'foo',
+      },
+      {
+        title: 'declaration is true, declacationDir and doutDir are defined, this option should be true and have files in declarationDir',
+        declaration: true,
+        declarationDir: 'dec',
+        outDir: 'out',
+        expectedDeclaration: true,
+        expectedDeclarationDir: 'dec',
+      },
+    ];
+    data.forEach(({ title,
+        declaration, declarationDir, outDir,
+        expectedDeclaration, expectedDeclarationDir }) => {
+      it(title, () => {
+        testDeclaration(
+          { declaration, declarationDir, outDir },
+          { expectedDeclaration, expectedDeclarationDir }
+        );
+      });
+    });
+  });
+
+  describe('inlineSourceMap should be well managed', function () {
+    function testInlineSourceMap(inlineSourceMap, expectedInlineSourceMap) {
       const dirRef = process.cwd();
-      testDeclaration({ dirRef }, { expectedDeclaration: false });
-    });
-    it('declaration is false, this option should be false and have neither dir nor file', function () {
-      const dirRef = process.cwd();
-      testDeclaration({ dirRef, declaration: false }, { expectedDeclaration: false });
-      testDeclaration({ dirRef, declaration: false, declarationDir: '/declarationDir' }, { expectedDeclaration: false });
-    });
-    it('declaration is true but neither declacationDir not outDir are defined, this option should be true, have files in the current directory', function () {
-      const dirRef = process.cwd();
-      testDeclaration(
-        { dirRef, declaration: true },
-        { expectedDeclaration: true, expectedDeclarationDir: dirRef });
-    });
-    it('declaration is true, declacationDir is not defined, outDIr is defined, this option should be true and have files in outDir', function () {
-      const outDir = 'foo';
-      testDeclaration(
-        { dirRef: process.cwd(), declaration: true, outDir },
-        { expectedDeclaration: true, expectedDeclarationDir: outDir });
-    });
-    it('declaration is true, declacationDir is defined, outDir is not defined, this option should be true and have files in declarationDir', function () {
-      const declarationDir = 'foo';
-      testDeclaration(
-        { dirRef: process.cwd(), declaration: true, declarationDir },
-        { expectedDeclaration: true, expectedDeclarationDir: declarationDir });
-    });
-    it('declaration is true, declacationDir an doutDir are defined, this option should be true and have files in declarationDir', function () {
-      const declarationDir = 'foo';
-      testDeclaration(
-        { dirRef: process.cwd(), declaration: true, declarationDir },
-        { expectedDeclaration: true, expectedDeclarationDir: declarationDir });
+      const vinyl = getVinylFile(`${dirRef}/tsconfig.json`, {
+        compilerOptions: {
+          inlineSourceMap,
+        },
+      });
+      const tsConfig = new TsConfig(vinyl);
+      tsConfig.inlineSourceMap.should.be.deep.equal(expectedInlineSourceMap);
+    }
+    const data = [
+      { title: 'No inlineSourceMap defined, should be false', inlineSourceMap: undefined, expectedInlineSourceMap: false },
+      { title: 'inlineSourceMap set to false, should be false', inlineSourceMap: false, expectedInlineSourceMap: false },
+      { title: 'inlineSourceMap set to true, should be true', inlineSourceMap: true, expectedInlineSourceMap: true },
+    ];
+    data.forEach(({ title, inlineSourceMap, expectedInlineSourceMap }) => {
+      it(title, () => {
+        testInlineSourceMap(inlineSourceMap, expectedInlineSourceMap);
+      });
     });
   });
 });
