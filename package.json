@@ -23,7 +23,7 @@
     "transpile",
     "gulp",
     "gulpplugin",
-    "tsconfig",
+    "tsconfig"
   ],
   "author": "FranckLdx (https://github.com/franckLdx)",
   "licenses": [
@@ -41,7 +41,7 @@
     "node": ">=6.0.0"
   },
   "peerDependencies": {
-    "gulp": "^3.9.0",
+    "gulp": "^3.9.0"
   },
   "dependencies": {
     "del": "^2.2.2",
