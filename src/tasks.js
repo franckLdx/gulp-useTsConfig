@@ -5,8 +5,9 @@
 const del = require('del');
 const gulp = require('gulp');
 const filter = require('gulp-filter');
-const typeScript = require('gulp-typeScript');
 const sourcemaps = require('gulp-sourcemaps');
+const tslint = require('gulp-tslint');
+const typeScript = require('gulp-typeScript');
 
 module.exports.clean = (tsConfig) => {
   const rawFiles = [tsConfig.jsFiles, tsConfig.mapFiles, tsConfig.declarationFiles];
@@ -28,6 +29,11 @@ function getFilter(tsConfig) {
   return filter(mask);
 }
 
+function getTsFiles(tsConfig) {
+  const pipe = gulp.src(tsConfig.tsFiles);
+  return pipe.pipe(getFilter(tsConfig));
+}
+
 function getSourceMapInit(tsConfig) {
   return (tsConfig.sourceMap || tsConfig.inlineSourceMap) ? sourcemaps.init() : undefined;
 }
@@ -47,8 +53,7 @@ function getSourceMapWrite(tsConfig) {
 }
 
 module.exports.build = (tsConfig) => {
-  let pipe = gulp.src(tsConfig.tsFiles);
-  pipe = pipe.pipe(getFilter(tsConfig));
+  let pipe = getTsFiles(tsConfig);
   const sourceMapInit = getSourceMapInit(tsConfig);
   if (sourceMapInit) {
     pipe = pipe.pipe(sourceMapInit);
@@ -60,3 +65,9 @@ module.exports.build = (tsConfig) => {
   }
   return pipe.pipe(gulp.dest(tsConfig.outDir));
 };
+
+module.exports.lint((tsConfig, tsLintOptions, reporterOptions) => {
+  return getTsFiles(tsConfig)
+    .pipe(tslint(tsLintOptions))
+    .pipe(tslint.report(reporterOptions));
+});
