@@ -100,14 +100,24 @@ describe('analyseTsConfig ', function () {
       const expectedResult = files ? files.map(item => path.join(process.cwd(), item)) : [];
       tsConfig.files.should.be.deep.equal(expectedResult);
     }
-    it('files is not defined, it should []', function () {
-      testFiles(undefined);
-    });
-    it('files is defined with a single value which should be returned with the relevant dir', function () {
-      testFiles(['index.ts']);
-    });
-    it('include is defined with a multiple values which should be returned with the relevant dir', function () {
-      testFiles(['index.ts', 'app.ts', 'view.tsx']);
+    const data = [
+      {
+        title: 'files is not defined, it should []',
+        files: undefined,
+      },
+      {
+        title: 'files is not defined, it should []',
+        files: ['index.ts'],
+      },
+      {
+        title: 'include is defined with a multiple values which should be returned with the relevant dir',
+        files: ['index.ts', 'app.ts', 'view.tsx'],
+      },
+    ];
+    data.forEach(({ title, files }) => {
+      it(title, () => {
+        testFiles(files);
+      });
     });
   });
 
@@ -121,14 +131,24 @@ describe('analyseTsConfig ', function () {
       const expectedResult = exclude ? exclude.map(item => path.join(process.cwd(), item)) : [];
       tsConfig.exclude.should.be.deep.equal(expectedResult);
     }
-    it('file is not defined, it should be []', function () {
-      testExclude(undefined);
-    });
-    it('file is defined with a single value which should be returned with the relevant dir', function () {
-      testExclude(['index.ts']);
-    });
-    it('file is defined with a multiple values which should be returned with the relevant dir', function () {
-      testExclude(['index.ts', 'app.ts', 'view.tsx']);
+    const data = [
+      {
+        title: 'exclude is not defined, it should be []',
+        exclude: undefined,
+      },
+      {
+        title: 'exclude is defined with a single value which should be returned with the relevant dir',
+        exclude: ['index.ts'],
+      },
+      {
+        title: 'exclude is defined with a multiple values which should be returned with the relevant dir',
+        exclude: ['index.ts', 'app.ts', 'view.tsx'],
+      },
+    ];
+    data.forEach(({ title, exclude }) => {
+      it(title, () => {
+        testExclude(exclude);
+      });
     });
   });
 
@@ -141,14 +161,27 @@ describe('analyseTsConfig ', function () {
       const tsConfig = new TsConfig(vinyl);
       tsConfig.allowJs.should.be.deep.equal(expected);
     }
-    it('allowJs is not defined, it should be false', function () {
-      testAllowJs(undefined, false);
-    });
-    it('allowJs is false', function () {
-      testAllowJs(false, false);
-    });
-    it('allowJs is true', function () {
-      testAllowJs(true, true);
+    const data = [
+      {
+        title: 'allowJs is not defined, it should be false',
+        allowJs: undefined,
+        expected: false,
+      },
+      {
+        title: 'allowJs is false',
+        allowJs: false,
+        expected: false,
+      },
+      {
+        title: 'allowJs is true',
+        allowJs: true,
+        expected: true,
+      },
+    ];
+    data.forEach(({ title, allowJs, expected }) => {
+      it(title, () => {
+        testAllowJs(allowJs, expected);
+      });
     });
   });
 
@@ -187,7 +220,8 @@ describe('analyseTsConfig ', function () {
   });
 
   describe('sourceMap should be well managed', function () {
-    function testSourceMap(dirRef, sourceMap, expectedSourceMap, expectedMapFiles) {
+    function testSourceMap(sourceMap, expectedSourceMap, expectedMapFiles) {
+      const dirRef = process.cwd();
       const vinyl = getVinylFile(`${dirRef}/tsconfig.json`, {
         compilerOptions: {
           sourceMap,
@@ -201,17 +235,30 @@ describe('analyseTsConfig ', function () {
         should.not.exist(tsConfig.mapFiles);
       }
     }
-    it('sourceMap is not defined, should be false and have no file', function () {
-      const dirRef = process.cwd();
-      testSourceMap(dirRef, undefined, false, undefined);
-    });
-    it('sourceMap is not false, should be false and have no file', function () {
-      const dirRef = process.cwd();
-      testSourceMap(dirRef, false, false, undefined);
-    });
-    it('sourceMap is not true, should be true and have map files', function () {
-      const dirRef = process.cwd();
-      testSourceMap(dirRef, true, true, path.join(dirRef, '**/*.js.map'));
+    const data = [
+      {
+        title: 'sourceMap is not defined, should be false and have no file',
+        sourceMap: undefined,
+        expectedSourceMap: false,
+        expectedMapFiles: undefined,
+      },
+      {
+        title: 'sourceMap is false, should be false and have no file',
+        sourceMap: false,
+        expectedSourceMap: false,
+        expectedMapFiles: undefined,
+      },
+      {
+        title: 'sourceMap is true, should be true and have map files',
+        sourceMap: true,
+        expectedSourceMap: true,
+        expectedMapFiles: path.join(process.cwd(), '**', '*.js.map'),
+      },
+    ];
+    data.forEach(({ title, sourceMap, expectedSourceMap, expectedMapFiles }) => {
+      it(title, () => {
+        testSourceMap(sourceMap, expectedSourceMap, expectedMapFiles);
+      });
     });
   });
 
