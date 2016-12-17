@@ -5,6 +5,9 @@ you can generate sourceMap without using any extra gulp-sourcemaps plugin. You p
 valid tsconfig.json and that's it.
 
 
+## New in 1.1.0:
+* lint support
+
 ## Example
 ```javascript
 const gulp = require('gulp');
@@ -81,6 +84,7 @@ Lint accepts an object configuration, with two properties:
 }
 ```
 [Click here for more information about tslint](https://www.npmjs.com/package/gulp-tslint)
+
 Another example using some configuration options:
 ```javascript
 gulp.task('lint', () => {
