@@ -66,7 +66,7 @@ module.exports.build = (tsConfig) => {
   return pipe.pipe(gulp.dest(tsConfig.outDir));
 };
 
-module.exports.lint((tsConfig, tsLintOptions, reporterOptions) => {
+module.exports.lint = ((tsConfig, tsLintOptions, reporterOptions) => {
   return getTsFiles(tsConfig)
     .pipe(tslint(tsLintOptions))
     .pipe(tslint.report(reporterOptions));

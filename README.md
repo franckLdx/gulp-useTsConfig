@@ -12,12 +12,17 @@ const useTsConfig = require('gulp-use-tsconfig');
 
 const tsConfig = './tsconfig.json';
 
+gulp.task('lint', () => {
+  return gulp.src(tsConfig)
+    .pipe(useTsConfig.lint());
+});
+
 gulp.task('pre-build', () => {
   return gulp.src(tsConfig)
     .pipe(useTsConfig.clean()); // Remoce all .js; .map and .d.ts files
 });
 
-gulp.task('build', ['pre-build'], () => {
+gulp.task('build', ['lint', 'pre-build'], () => {
   return gulp.src(tsConfig)
     .pipe(useTsConfig.build());// generates .js and optionaly .map anod/or .d.ts files
 });
@@ -60,6 +65,40 @@ gulp.task('pre-build', () => {
     .pipe(useTsConfig.clean()); // Remoce all .js; .map and .d.ts files
 });
 ```
+### Lint
+"Pipes" your tsconfig to the plugin and call _lint_ method:
+```javascript
+gulp.task('lint', () => {
+  return gulp.src(tsConfig)
+    .pipe(useTsConfig.lint());
+});
+```
+Lint accepts an object configuration, with two properties:
+```javascript
+{
+  tsLintOptions : configuration of gulp-tsLint
+  reporterOptions: configuration of gulp-tsLint reporter
+}
+```
+[Click here for more information about tslint](https://www.npmjs.com/package/gulp-tslint)
+Another example using some configuration options:
+```javascript
+gulp.task('lint', () => {
+  return gulp.src(tsConfig)
+    .pipe(useTsConfig.lint(
+      {
+        tsLintOptions: {
+          formatter: 'prose',
+        },
+        reporterOptions: {
+          summarizeFailureOutput: false,
+          emitError: false,
+        },
+      }
+    ));
+});
+```
+
 
 ### Tsconfig.json
 Folowing optons of tsconfig.json is directly managed by gulp-useTsConfig:

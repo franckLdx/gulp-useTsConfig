@@ -30,9 +30,10 @@ module.exports.build = () => {
   });
 };
 
-module.exports.lint = (tsLintOptions = {}, reporterOptions = {}) => {
+module.exports.lint = ({ tsLintOptions = {}, reporterOptions = {} } = {}) => {
   return getTransformPipe((file) => {
     const tsConfig = new TsConfig(file);
     return tasks.lint(tsConfig, tsLintOptions, reporterOptions);
   });
 };
+11
