@@ -36,4 +36,3 @@ module.exports.lint = ({ tsLintOptions = {}, reporterOptions = {} } = {}) => {
     return tasks.lint(tsConfig, tsLintOptions, reporterOptions);
   });
 };
-11
