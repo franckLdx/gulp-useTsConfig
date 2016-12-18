@@ -7,9 +7,10 @@ function toFullPath(dir, files) {
   return files.map(file => path.resolve(dir, file));
 }
 
-/** Nomaliz a path */
-function normalizeDir(actualDir, defaultDir) {
-  return path.resolve(path.normalize(actualDir || defaultDir));
+/** Resolve and Nomaliz a path relative to a refDir */
+function normalizeDir(actualDir, refDir) {
+  const dir = actualDir ? path.resolve(refDir, actualDir) : path.resolve(refDir);
+  return path.normalize(dir);
 }
 
 // Files included by typeScript compiler when "files" and "include" are both left unspecified

@@ -21,7 +21,7 @@ function getVinylFile(filePath, content) {
 describe('analyseTsConfig ', function () {
   describe('tsDir should be well defined', function () {
     function testTsDir(dirRef, rootDir, expecteDir) {
-      const actualExpecteDir = path.resolve(expecteDir);
+      const actualExpecteDir = path.normalize(path.resolve(expecteDir));
       const expectedFiles = [
         path.join(actualExpecteDir, '**', '*.ts'),
         path.join(actualExpecteDir, '**', '*.d.ts'),
@@ -406,12 +406,12 @@ describe('analyseTsConfig ', function () {
         expectedDeclarationDir: 'foo',
       },
       {
-        title: 'declaration is true, declacationDir and doutDir are defined, this option should be true and have files in declarationDir',
+        title: 'declaration is true, declacationDir and outDir are defined, this option should be true and have files in declarationDir',
         declaration: true,
         declarationDir: 'dec',
         outDir: 'out',
         expectedDeclaration: true,
-        expectedDeclarationDir: 'dec',
+        expectedDeclarationDir: 'out/dec',
       },
     ];
     data.forEach(({ title,
