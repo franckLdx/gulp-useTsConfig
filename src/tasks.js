@@ -25,7 +25,7 @@ module.exports.clean = (tsConfig) => {
 
 function getFilter(tsConfig) {
   const excludeMask = tsConfig.exclude.map(item => `!${item}`);
-  const mask = ['*/**'].concat(excludeMask);
+  const mask = ['*', '*/**'].concat(excludeMask);
   return filter(mask);
 }
 
