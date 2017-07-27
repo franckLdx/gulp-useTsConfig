@@ -414,9 +414,10 @@ describe('analyseTsConfig ', function () {
         expectedDeclarationDir: 'out/dec',
       },
     ];
-    data.forEach(({ title,
-        declaration, declarationDir, outDir,
-        expectedDeclaration, expectedDeclarationDir }) => {
+    data.forEach(({
+      title,
+      declaration, declarationDir, outDir,
+      expectedDeclaration, expectedDeclarationDir }) => {
       it(title, () => {
         testDeclaration(
           { declaration, declarationDir, outDir },

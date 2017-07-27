@@ -66,7 +66,7 @@ module.exports.TsConfig = class {
     return excludes.map(exclude => path.resolve(this.tsDir, exclude));
   }
 
-  /** AllowJs option. Default: false*/
+  /** AllowJs option. Default: false */
   get allowJs() {
     return this._config.allowJs || false;
   }
@@ -86,7 +86,7 @@ module.exports.TsConfig = class {
     return this.compilerOptions.sourceMap || false;
   }
 
-  /** inineSourceMap option. Default: false*/
+  /** inineSourceMap option. Default: false */
   get inlineSourceMap() {
     return this.compilerOptions.inlineSourceMap || false;
   }
