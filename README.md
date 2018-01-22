@@ -4,7 +4,10 @@
 you can generate sourceMap without using any extra gulp-sourcemaps plugin. You provide it with a
 valid tsconfig.json and that's it.
 
-## New in 1.1.3:
+## 1.1.5
+* Move tslint from devDep to dep
+
+## New in 1.1.3 and 1.1.4:
 * Update dependencies
 
 ## New in 1.1.2:
