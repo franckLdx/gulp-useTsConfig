@@ -7,7 +7,7 @@ const gulp = require('gulp');
 const filter = require('gulp-filter');
 const sourcemaps = require('gulp-sourcemaps');
 const tslint = require('gulp-tslint');
-const typeScript = require('gulp-typeScript');
+const typeScript = require('gulp-typescript');
 
 module.exports.clean = (tsConfig) => {
   const rawFiles = [tsConfig.jsFiles, tsConfig.mapFiles, tsConfig.declarationFiles];
