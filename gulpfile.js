@@ -6,9 +6,10 @@ const eslint = require('gulp-eslint');
 
 const src = ['./index.js', './src/**/*.js'];
 const test = ['./test/**/*Test.js'];
+const example = ['./example/**/*.js', '!./example/lint1/**/*.js', '!./example/lint2/**/*.js'];
 
 gulp.task('lint', () => {
-  return gulp.src(src.concat(test))
+  return gulp.src(src.concat(test).concat(example))
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
