@@ -19,7 +19,7 @@ const DEFAULT_INPUT_TS_FILES = ['**/*.ts', '**/*.d.ts', '**/*.tsx'];
 const DEFAULT_INPUT_JS_FILES = ['**/*.js', '**/*.jsx'];
 
 /** Manages the tsconfig file. Most of the options of this class match tsconfig file
-options. YOu need to read https://www.typescriptlang.org/docs/handbook/compiler-options.html
+options. You need to read https://www.typescriptlang.org/docs/handbook/compiler-options.html
 and https://www.typescriptlang.org/docs/handbook/tsconfig-json.html to understand this class.
 properties that returns files list use tsconfig options to find what are the matching files:
 ex: mapFiles return <path>\/**\/\/*.map where <path> is build based on tsconfig content. if
