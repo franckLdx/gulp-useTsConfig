@@ -1,2 +1,0 @@
-Go in a sub directory (but lint) and type "..\..\node_modules\.bin\gulp --gulpfile ..\gulpfile.js --cwd ."
-in lint just execute gulp using the local gulpfile.

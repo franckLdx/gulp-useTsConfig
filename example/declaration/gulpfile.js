@@ -1,6 +1,6 @@
 
 const gulp = require('gulp');
-const useTsConfig = require('../index.js');
+const useTsConfig = require('../../index.js');
 
 const tsConfig = './tsconfig.json';
 
