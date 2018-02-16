@@ -1,9 +1,8 @@
 
-const foo = 'hello';
-  
+const foo = "hello";
+
 class Demo {
-    bar() {
-
+    public bar() {
+        return foo;
     }
-
 }
