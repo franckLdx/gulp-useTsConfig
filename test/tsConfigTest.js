@@ -9,7 +9,7 @@ const should = require('chai').should();
 
 function getVinylFile(filePath, content) {
   const pathData = path.parse(filePath);
-  const contents = new Buffer(JSON.stringify(content));
+  const contents = Buffer.from(JSON.stringify(content));
   return new Vinyl({
     cwd: pathData.root,
     base: pathData.dir,
@@ -34,7 +34,7 @@ describe('analyseTsConfig ', function () {
       tsConfig.tsDir.should.be.deep.equal(actualExpecteDir);
       tsConfig.tsFiles.should.be.deep.equal(expectedFiles);
     }
-    const data = [
+    const testData = [
       {
         title: 'rootDir is not defined, tsDir should be the file path',
         dirRef: '/test',
@@ -54,11 +54,10 @@ describe('analyseTsConfig ', function () {
         expectedDir: './ts',
       },
     ];
-    data.forEach(({ title, dirRef, rootDir, expectedDir }) => {
-      it(title, () => {
-        testTsDir(dirRef, rootDir, expectedDir);
-      });
-    });
+    const test = (data) => {
+      it(data.title, () => testTsDir(data.dirRef, data.rootDir, data.expectedDir));
+    };
+    testData.forEach(test);
   });
 
   describe('tsFiles should be well defined', function () {
@@ -73,7 +72,7 @@ describe('analyseTsConfig ', function () {
       const expectedResult = expected ? expected.map(item => path.join(dirRef, item)) : [];
       tsConfig.tsFiles.should.be.deep.equal(expectedResult);
     }
-    const data = [
+    const testData = [
       {
         title: 'neither files nor include are set, allowJs is false, tsFile should be default',
         files: undefined,
@@ -131,9 +130,10 @@ describe('analyseTsConfig ', function () {
         expected: ['*.foo', '*.bar', '*.ace', '*.me', '**/*.js', '**/*.jsx'],
       },
     ];
-    data.forEach(({ title, files, include, allowJs, expected }) => {
-      it(title, () => testTsFiles(files, include, allowJs, expected));
-    });
+    const test = (data) => {
+      it(data.title, () => testTsFiles(data.files, data.include, data.allowJs, data.expected));
+    };
+    testData.forEach(test);
   });
 
   describe('include should be well defined', function () {
@@ -273,7 +273,7 @@ describe('analyseTsConfig ', function () {
       tsConfig.outDir.should.be.deep.equal(expectedOutDir);
       tsConfig.jsFiles.should.be.deep.equal(expectedJsFiles);
     }
-    const data = [
+    const testData = [
       {
         title: 'outDir is not defined, it should be the file location',
         dirRef: process.cwd(),
@@ -287,11 +287,10 @@ describe('analyseTsConfig ', function () {
         expected: '/foo',
       },
     ];
-    data.forEach(({ title, dirRef, outDir, expected }) => {
-      it(title, () => {
-        testOutDir(dirRef, outDir, expected);
-      });
-    });
+    const test = (data) => {
+      it(data.title, () => testOutDir(data.dirRef, data.outDir, data.expected));
+    };
+    testData.forEach(test);
   });
 
   describe('sourceMap should be well managed', function () {
@@ -310,7 +309,7 @@ describe('analyseTsConfig ', function () {
         should.not.exist(tsConfig.mapFiles);
       }
     }
-    const data = [
+    const testData = [
       {
         title: 'sourceMap is not defined, should be false and have no file',
         sourceMap: undefined,
@@ -330,18 +329,18 @@ describe('analyseTsConfig ', function () {
         expectedMapFiles: path.join(process.cwd(), '**', '*.js.map'),
       },
     ];
-    data.forEach(({ title, sourceMap, expectedSourceMap, expectedMapFiles }) => {
-      it(title, () => {
-        testSourceMap(sourceMap, expectedSourceMap, expectedMapFiles);
+    const test = (data) => {
+      it(data.title, () => {
+        testSourceMap(data.sourceMap, data.expectedSourceMap, data.expectedMapFiles);
       });
-    });
+    };
+    testData.forEach(test);
   });
 
   describe('Declaration should be well managed', function () {
-    function testDeclaration(
-      { declaration, declarationDir, outDir },
-      { expectedDeclaration, expectedDeclarationDir }
-    ) {
+    function testDeclaration({
+      declaration, declarationDir, outDir, expectedDeclaration, expectedDeclarationDir
+    }) {
       const dirRef = process.cwd();
       const vinyl = getVinylFile(`${dirRef}/tsconfig.json`, {
         compilerOptions: {
@@ -364,7 +363,7 @@ describe('analyseTsConfig ', function () {
         should.not.exist(tsConfig.declarationFiles);
       }
     }
-    const data = [
+    const testData = [
       {
         title: 'declaration is not defined, this option should be false and have neither dir nor file',
         declaration: undefined,
@@ -414,15 +413,16 @@ describe('analyseTsConfig ', function () {
         expectedDeclarationDir: 'out/dec',
       },
     ];
-    data.forEach(({
+
+    testData.forEach(({
       title,
       declaration, declarationDir, outDir,
-      expectedDeclaration, expectedDeclarationDir }) => {
+      expectedDeclaration, expectedDeclarationDir
+    }) => {
       it(title, () => {
-        testDeclaration(
-          { declaration, declarationDir, outDir },
-          { expectedDeclaration, expectedDeclarationDir }
-        );
+        testDeclaration({
+          declaration, declarationDir, outDir, expectedDeclaration, expectedDeclarationDir
+        });
       });
     });
   });
