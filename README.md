@@ -1,28 +1,7 @@
 # gulp-useTsConfig
 
 > Yet another typescript plugin. This one remove the boilerplate of using gulp-typeScript. For example,
-you can generate sourceMap without using any extra gulp-sourcemaps plugin. You provide it with a
-valid tsconfig.json and that's it.
-
-## 1.1.6
-* fix some imports ( [contribution of Stacy Bowler](https://github.com/sbowler) )
-
-## 1.1.5
-* Move tslint from devDep to dep
-
-## 1.1.3 and 1.1.4:
-* Update dependencies
-
-## 1.1.2:
-* Update dependencies
-* Update eslint config
-* Use only LF in source files
-
-## 1.1.1:
-* fix filter & outDir computing
-
-## 1.1.0:
-* lint support
+you can generate sourceMap without the burden of configuration gulp-sourcemaps plugin: you provide this plugin with a valid tsconfig.json, from your build task call useTsConfig build() and... you've done.
 
 ## Example
 ```javascript
@@ -44,6 +23,11 @@ gulp.task('pre-build', () => {
 gulp.task('build', ['lint', 'pre-build'], () => {
   return gulp.src(tsConfig)
     .pipe(useTsConfig.build());// generates .js and optionaly .map anod/or .d.ts files
+});
+
+gulp.task('watch', ['build'], () => {
+  return gulp.src(tsConfig)
+    .pipe(useTsConfig.watch());
 });
 
 gulp.task('default', ['build']);
@@ -84,6 +68,21 @@ gulp.task('pre-build', () => {
     .pipe(useTsConfig.clean()); // Remoce all .js; .map and .d.ts files
 });
 ```
+
+### Watch
+"Pipes" your tsconfig to the plugin and call _watch_ method:
+```javascript
+const gulp = require('gulp');
+const useTsConfig = require('gulp-use-tsconfig');
+
+const tsConfig = './tsconfig.json';
+
+gulp.task('watch', () => {
+  return gulp.src(tsConfig)
+    .pipe(useTsConfig.watch()); // Remoce all .js; .map and .d.ts files
+});
+```
+
 ### Lint
 "Pipes" your tsconfig to the plugin and call _lint_ method:
 ```javascript
@@ -145,3 +144,27 @@ Require typescript 2.x or upper.
 
 ## License
 MIT
+
+## 1.1.7
+* Now inclue watch built-in method
+* Examples refactoring
+
+## 1.1.6
+* fix some imports ( [contribution of Stacy Bowler](https://github.com/sbowler) )
+
+## 1.1.5
+* Move tslint from devDep to dep
+
+## 1.1.3 and 1.1.4:
+* Update dependencies
+
+## 1.1.2:
+* Update dependencies
+* Update eslint config
+* Use only LF in source files
+
+## 1.1.1:
+* fix filter & outDir computing
+
+## 1.1.0:
+* lint support
