@@ -79,7 +79,7 @@ const tsConfig = './tsconfig.json';
 
 gulp.task('watch', () => {
   return gulp.src(tsConfig)
-    .pipe(useTsConfig.watch()); // Remoce all .js; .map and .d.ts files
+    .pipe(useTsConfig.watch());
 });
 ```
 
