@@ -66,6 +66,15 @@ module.exports.build = (tsConfig) => {
   return pipe.pipe(gulp.dest(tsConfig.outDir));
 };
 
+module.exports.watch = (tsConfig) => {
+  const simpleBuild = () => {
+    getTsFiles(tsConfig)
+      .pipe(typeScript(tsConfig.compilerOptions))
+      .pipe(gulp.dest(tsConfig.outDir));
+  };
+  return gulp.watch('*.ts', simpleBuild);
+};
+
 module.exports.lint = ((tsConfig, tsLintOptions, reporterOptions) => {
   return getTsFiles(tsConfig)
     .pipe(tslint(tsLintOptions))

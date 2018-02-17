@@ -4,8 +4,9 @@
   "description": "Performs typescript clean and build using tsConfig.json only.",
   "main": "index.js",
   "scripts": {
-    "test": "node_modules/.bin/gulp",
-    "lint": "node_modules/.bin/gulp lint"
+    "test": "gulp test",
+    "lint": "gulp lint",
+    "cov": "nyc --all --reporter=html --reporter=text-summary npm t"
   },
   "repository": {
     "type": "git",
@@ -63,10 +64,18 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.6.1",
     "gulp-eslint": "^4.0.2",
-    "gulp-istanbul": "^1.1.3",
     "gulp-mocha": "^5.0.0",
     "istanbul": "^0.4.5",
     "mocha": "^5.0.1",
+    "nyc": "^11.4.1",
     "vinyl": "^2.0.1"
+  },
+  "nyc": {
+    "exclude": [
+      "gulpfile.js",
+      "test/**",
+      "example",
+      "coverage"
+    ]
   }
 }

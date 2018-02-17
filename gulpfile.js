@@ -1,6 +1,5 @@
 /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 const gulp = require('gulp');
-const istanbul = require('gulp-istanbul');
 const mocha = require('gulp-mocha');
 const eslint = require('gulp-eslint');
 
@@ -15,16 +14,15 @@ gulp.task('lint', () => {
     .pipe(eslint.failAfterError());
 });
 
-gulp.task('pre-test', () => {
-  return gulp.src(src)
-    .pipe(istanbul())
+gulp.task('pre-test', function () {
+  return gulp.src(['**/index.js', '**/src/*.js'])
+    .pipe(istanbul({includeUntested: true}))
     .pipe(istanbul.hookRequire());
 });
 
-gulp.task('test', ['pre-test'], () => {
-  return gulp.src(test)
-    .pipe(mocha())
-    .pipe(istanbul.writeReports({ reporters: ['text', 'text-summary', 'html'] }));
+gulp.task('test', function () {
+  return gulp.src(['test/*.js'])
+    .pipe(mocha());
 });
 
 gulp.task('default', ['lint', 'test']);

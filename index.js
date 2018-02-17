@@ -5,7 +5,8 @@ const tasks = require('./src/tasks');
 
 function getTransformPipe(transform) {
   let gotAfile = false;
-  return through2.obj(function toStream(file, encoding, callback) {
+
+  function toStream(file, encoding, callback) {
     gotAfile = true;
     const transformer = transform(file);
     if (transformer instanceof Promise) {
@@ -20,7 +21,9 @@ function getTransformPipe(transform) {
     }).on('error', (error) => {
       callback(error);
     });
-  }).on('finish', () => {
+  }
+
+  return through2.obj(toStream).on('finish', () => {
     if (!gotAfile) {
       gutil.log(gutil.colors.red('Got no config file'));
     }
@@ -33,6 +36,14 @@ module.exports.clean = () => {
     return tasks.clean(tsConfig);
   });
 };
+
+module.exports.watch = () => {
+  return getTransformPipe((file) => {
+    const tsConfig = new TsConfig(file);
+    return tasks.watch(tsConfig);
+  });
+};
+
 
 module.exports.build = () => {
   return getTransformPipe((file) => {
