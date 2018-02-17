@@ -23,15 +23,11 @@ module.exports.clean = (tsConfig) => {
   return del(actualfiles);
 };
 
-function getFilter(tsConfig) {
-  const excludeMask = tsConfig.exclude.map(item => `!${item}`);
-  const mask = ['*', '*/**'].concat(excludeMask);
-  return filter(mask);
-}
-
 function getTsFiles(tsConfig) {
-  const pipe = gulp.src(tsConfig.tsFiles);
-  return pipe.pipe(getFilter(tsConfig));
+  const includeMask = tsConfig.tsFiles;
+  const excludeMask = tsConfig.exclude.map(item => `!${item}`);
+  const mask = includeMask.concat(excludeMask);
+  return gulp.src(mask);
 }
 
 function getSourceMapInit(tsConfig) {
