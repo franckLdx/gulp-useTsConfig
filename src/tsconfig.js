@@ -113,8 +113,8 @@ module.exports.TsConfig = class {
 
   /** declration dir. Default: undefined */
   get declarationDir() {
-    return this.declaration ?
-      normalizeDir(this.compilerOptions.declarationDir, this.outDir) : undefined;
+    return this.declaration
+      ? normalizeDir(this.compilerOptions.declarationDir, this.outDir) : undefined;
   }
 
   /** Returns the declaration files, undefined if declaration is not set */

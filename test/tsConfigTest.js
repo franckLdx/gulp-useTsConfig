@@ -2,10 +2,11 @@
 
 const path = require('path');
 
-const { TsConfig } = require('../src/tsconfig');
 const Vinyl = require('vinyl');
 
 const should = require('chai').should();
+
+const { TsConfig } = require('../src/tsconfig');
 
 function getVinylFile(filePath, content) {
   const pathData = path.parse(filePath);
@@ -349,10 +350,10 @@ describe('analyseTsConfig ', function () {
           declarationDir,
         },
       });
-      const actualExpectedDeclarationDir = expectedDeclarationDir ?
-        path.resolve(expectedDeclarationDir) : undefined;
-      const expectedDeclarationFiles = actualExpectedDeclarationDir ?
-        path.join(actualExpectedDeclarationDir, '**', '*.d.ts') : undefined;
+      const actualExpectedDeclarationDir = expectedDeclarationDir
+        ? path.resolve(expectedDeclarationDir) : undefined;
+      const expectedDeclarationFiles = actualExpectedDeclarationDir
+        ? path.join(actualExpectedDeclarationDir, '**', '*.d.ts') : undefined;
       const tsConfig = new TsConfig(vinyl);
       tsConfig.declaration.should.be.deep.equal(expectedDeclaration);
       if (expectedDeclaration) {

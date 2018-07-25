@@ -168,3 +168,7 @@ MIT
 
 ## 1.1.0:
 * lint support
+
+## 1.2.2:
+* Yarn migration
+* Update dependencies
