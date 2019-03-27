@@ -145,6 +145,13 @@ Require typescript 2.x or upper.
 ## License
 MIT
 
+## 1.2.3:
+* Update dependencies
+
+## 1.2.2:
+* Yarn migration
+* Update dependencies
+
 ## 1.1.7
 * Now inclue watch built-in method
 * Examples refactoring
@@ -168,7 +175,3 @@ MIT
 
 ## 1.1.0:
 * lint support
-
-## 1.2.2:
-* Yarn migration
-* Update dependencies
