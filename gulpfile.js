@@ -7,7 +7,7 @@ const src = ['./index.js', './src/**/*.js'];
 const test = ['./test/**/*Test.js'];
 const example = ['./example/**/*.js', '!./example/lint1/**/*.js', '!./example/lint2/**/*.js'];
 
-gulp.task('lint', () => {
+gulp.task('lint', function () {
   return gulp.src(src.concat(test).concat(example))
     .pipe(eslint())
     .pipe(eslint.format())
@@ -16,7 +16,7 @@ gulp.task('lint', () => {
 
 gulp.task('pre-test', function () {
   return gulp.src(['**/index.js', '**/src/*.js'])
-    .pipe(istanbul({includeUntested: true}))
+    .pipe(istanbul({ includeUntested: true }))
     .pipe(istanbul.hookRequire());
 });
 
@@ -25,4 +25,4 @@ gulp.task('test', function () {
     .pipe(mocha());
 });
 
-gulp.task('default', ['lint', 'test']);
+gulp.task('default', gulp.parallel(['lint', 'test']));
