@@ -10,25 +10,25 @@ const useTsConfig = require('gulp-use-tsconfig');
 
 const tsConfig = './tsconfig.json';
 
-gulp.task('lint', () => {
+gulp.task('lint', function() {
   return gulp.src(tsConfig)
     .pipe(useTsConfig.lint());
 });
 
-gulp.task('pre-build', () => {
+gulp.task('pre-build', function() {
   return gulp.src(tsConfig)
     .pipe(useTsConfig.clean()); // Remoce all .js; .map and .d.ts files
 });
 
-gulp.task('build', ['lint', 'pre-build'], () => {
+gulp.task('build', gulp.series(['lint', 'pre-build'], function() {
   return gulp.src(tsConfig)
     .pipe(useTsConfig.build());// generates .js and optionaly .map anod/or .d.ts files
-});
+}));
 
-gulp.task('watch', ['build'], () => {
+gulp.task('watch', gulp.series(['build'], function() {
   return gulp.src(tsConfig)
     .pipe(useTsConfig.watch());
-});
+}));
 
 gulp.task('default', ['build']);
 ```
@@ -48,10 +48,10 @@ const useTsConfig = require('gulp-use-tsconfig');
 
 const tsConfig = './tsconfig.json';
 
-gulp.task('build', ['pre-build'], () => {
+gulp.task('build', gulp.series(['pre-build'], function() {
   return gulp.src(tsConfig)
     .pipe(useTsConfig.build());// generates .js and optionaly .map anod/or .d.ts files
-});
+}));
 ```
 gulp-use-tsconfig analyses your tsconfig.json and does the job.
 
@@ -63,7 +63,7 @@ const useTsConfig = require('gulp-use-tsconfig');
 
 const tsConfig = './tsconfig.json';
 
-gulp.task('pre-build', () => {
+gulp.task('pre-build', function() {
   return gulp.src(tsConfig)
     .pipe(useTsConfig.clean()); // Remoce all .js; .map and .d.ts files
 });
@@ -77,7 +77,7 @@ const useTsConfig = require('gulp-use-tsconfig');
 
 const tsConfig = './tsconfig.json';
 
-gulp.task('watch', () => {
+gulp.task('watch', function() {
   return gulp.src(tsConfig)
     .pipe(useTsConfig.watch());
 });
@@ -86,7 +86,7 @@ gulp.task('watch', () => {
 ### Lint
 "Pipes" your tsconfig to the plugin and call _lint_ method:
 ```javascript
-gulp.task('lint', () => {
+gulp.task('lint', function() {
   return gulp.src(tsConfig)
     .pipe(useTsConfig.lint());
 });
@@ -102,7 +102,7 @@ Lint accepts an object configuration, with two properties:
 
 Another example using some configuration options:
 ```javascript
-gulp.task('lint', () => {
+gulp.task('lint', function() {
   return gulp.src(tsConfig)
     .pipe(useTsConfig.lint(
       {
