@@ -9,9 +9,9 @@ gulp.task('pre-build', () => {
     .pipe(useTsConfig.clean());
 });
 
-gulp.task('build', ['pre-build'], () => {
+gulp.task('build', gulp.series(['pre-build'], () => {
   return gulp.src(tsConfig)
     .pipe(useTsConfig.build());
-});
+}));
 
-gulp.task('default', ['build']);
+gulp.task('default', gulp.series(['build']));
