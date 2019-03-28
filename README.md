@@ -136,8 +136,6 @@ Folowing optons of tsconfig.json is directly managed by gulp-useTsConfig:
 
 If the "files" and "include" are both left unspecified, the compiled files are \*\*/\*.ts, \*\*/\*.d.ts and \*\*/\*.tsx.
 
-Sorry, but **outFile** is not supported yet.
-
 ## Restrictions:
 Requires Node 6.0.0 or upper.
 Require typescript 2.x or upper.
