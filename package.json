@@ -45,29 +45,29 @@
     "gulp": "^3.9.0"
   },
   "dependencies": {
-    "del": "^4.0.0",
+    "del": "^5.1.0",
     "gulp": "^4.0.0",
-    "gulp-filter": "^5.1.0",
+    "gulp-filter": "6.0.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-tslint": "^8.1.4",
     "gulp-typescript": "^5.0.1",
     "gulp-util": "^3.0.7",
     "through2": "^3.0.1",
-    "tslint": "^5.14.0",
-    "typescript": "^3.3.4000"
+    "tslint": "5.20.0",
+    "typescript": "3.6.3"
   },
   "devDependencies": {
     "chai": "^4.1.2",
-    "eslint": "^5.15.3",
-    "eslint-config-airbnb": "^17.1.0",
+    "eslint": "^6.5.1",
+    "eslint-config-airbnb": "18.0.1",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.12.4",
-    "gulp-eslint": "^5.0.0",
-    "gulp-mocha": "^6.0.0",
+    "gulp-eslint": "6.0.0",
+    "gulp-mocha": "7.0.1",
     "istanbul": "^0.4.5",
     "mocha": "^6.0.2",
-    "nyc": "^13.3.0",
+    "nyc": "14.1.1",
     "vinyl": "^2.0.1"
   },
   "nyc": {
