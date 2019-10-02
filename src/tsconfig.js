@@ -4,7 +4,7 @@ const path = require('path');
 
 /** Add full path to each files */
 function toFullPath(dir, files) {
-  return files.map(file => path.resolve(dir, file));
+  return files.map((file) => path.resolve(dir, file));
 }
 
 /** Resolve and Nomaliz a path relative to a refDir */
@@ -63,7 +63,7 @@ module.exports.TsConfig = class {
   /** Exclude option? Defualt: [] */
   get exclude() {
     const excludes = this._config.exclude || [];
-    return excludes.map(exclude => path.resolve(this.tsDir, exclude));
+    return excludes.map((exclude) => path.resolve(this.tsDir, exclude));
   }
 
   /** AllowJs option. Default: false */

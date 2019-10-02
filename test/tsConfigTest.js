@@ -70,7 +70,7 @@ describe('analyseTsConfig ', function () {
         allowJs,
       });
       const tsConfig = new TsConfig(vinyl);
-      const expectedResult = expected ? expected.map(item => path.join(dirRef, item)) : [];
+      const expectedResult = expected ? expected.map((item) => path.join(dirRef, item)) : [];
       tsConfig.tsFiles.should.be.deep.equal(expectedResult);
     }
     const testData = [
@@ -144,7 +144,7 @@ describe('analyseTsConfig ', function () {
         include,
       });
       const tsConfig = new TsConfig(vinyl);
-      const expectedResult = include ? include.map(item => path.join(process.cwd(), item)) : [];
+      const expectedResult = include ? include.map((item) => path.join(process.cwd(), item)) : [];
       tsConfig.include.should.be.deep.equal(expectedResult);
     }
     const data = [
@@ -173,7 +173,7 @@ describe('analyseTsConfig ', function () {
         files,
       });
       const tsConfig = new TsConfig(vinyl);
-      const expectedResult = files ? files.map(item => path.join(process.cwd(), item)) : [];
+      const expectedResult = files ? files.map((item) => path.join(process.cwd(), item)) : [];
       tsConfig.files.should.be.deep.equal(expectedResult);
     }
     const data = [
@@ -204,7 +204,7 @@ describe('analyseTsConfig ', function () {
         exclude,
       });
       const tsConfig = new TsConfig(vinyl);
-      const expectedResult = exclude ? exclude.map(item => path.join(process.cwd(), item)) : [];
+      const expectedResult = exclude ? exclude.map((item) => path.join(process.cwd(), item)) : [];
       tsConfig.exclude.should.be.deep.equal(expectedResult);
     }
     const data = [

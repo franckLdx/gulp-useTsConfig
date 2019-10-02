@@ -24,7 +24,7 @@ module.exports.clean = (tsConfig) => {
 
 function getTsFiles(tsConfig) {
   const includeMask = tsConfig.tsFiles;
-  const excludeMask = tsConfig.exclude.map(item => `!${item}`);
+  const excludeMask = tsConfig.exclude.map((item) => `!${item}`);
   const mask = includeMask.concat(excludeMask);
   return gulp.src(mask);
 }
