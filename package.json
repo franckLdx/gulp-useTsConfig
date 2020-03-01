@@ -1,6 +1,6 @@
 {
   "name": "gulp-use-tsconfig",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "description": "Performs typescript clean and build using tsConfig.json only.",
   "main": "index.js",
   "scripts": {
