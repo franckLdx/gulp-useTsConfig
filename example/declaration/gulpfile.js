@@ -1,4 +1,3 @@
-
 const gulp = require('gulp');
 const useTsConfig = require('../../index.js');
 
